@@ -7,6 +7,7 @@ namespace PERM.Player
         [Header("Components")]
         [SerializeField] private AudioController AudioController;
         [SerializeField] private Text TimerDisplay;
+        [SerializeField] private RectTransform Point;
 
         private float StartTime;
         private float TargetTime;
@@ -31,7 +32,6 @@ namespace PERM.Player
                 ElapsedTime = (Time.time - StartTime) * Multiplier;
                 TargetTime = ElapsedTime;
                 AudioTimer();
-                TimerDisplay.text = $"TrackTime : {ElapsedTime:F3}\nAudioTime : {ElapsedTime + DelayTime:F3}";
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -44,6 +44,11 @@ namespace PERM.Player
                     PauseTimer();
                 }
             }
+            // 根据ElapsedTime和Length的比例设置Point的位置
+            float ratio = Mathf.Clamp01(ElapsedTime / Length);
+            Point.anchorMin = new Vector2(ratio, Point.anchorMin.y);
+            Point.anchorMax = new Vector2(ratio, Point.anchorMax.y);
+            TimerDisplay.text = $"TrackTime : {ElapsedTime:F3}\nAudioTime : {ElapsedTime + DelayTime:F3}";
         }
         private void FixedUpdate()
         {

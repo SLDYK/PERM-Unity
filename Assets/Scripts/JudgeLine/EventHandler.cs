@@ -32,24 +32,24 @@ namespace PERM.Player
             LineTime = Timer.GetElapsedTime() / 60 * LineInfo.bpm * 32;
 
             // 处理判定线的移动事件
-            List<UniTask> moveTasks = LineInfo.judgeLineMoveEvents
-                .Select(moveEvent => HandleMoveEvent(moveEvent))
-                .ToList();
+            foreach (var moveEvent in LineInfo.judgeLineMoveEvents)
+            {
+                HandleMoveEvent(moveEvent);
+            }
 
             // 处理判定线的旋转事件
-            List<UniTask> rotateTasks = LineInfo.judgeLineRotateEvents
-                .Select(rotateEvent => HandleRotateEvent(rotateEvent))
-                .ToList();
+            foreach (var rotateEvent in LineInfo.judgeLineRotateEvents)
+            {
+                HandleRotateEvent(rotateEvent);
+            }
 
             // 处理判定线的消失事件
-            List<UniTask> disappearTasks = LineInfo.judgeLineDisappearEvents
-                .Select(disappearEvent => HandleDisappearEvent(disappearEvent))
-                .ToList();
-
-            // 不等待所有任务完成
-            UniTask.WhenAll(moveTasks.Concat(rotateTasks).Concat(disappearTasks)).Forget();
+            foreach (var disappearEvent in LineInfo.judgeLineDisappearEvents)
+            {
+                HandleDisappearEvent(disappearEvent);
+            }
         }
-        private async UniTask HandleMoveEvent(MoveEvent moveEvent)
+        private void HandleMoveEvent(MoveEvent moveEvent)
         {
             if (moveEvent.startTime <= LineTime && moveEvent.endTime > LineTime)
             {
@@ -62,9 +62,8 @@ namespace PERM.Player
 
                 transform.localPosition = CurrentPos;
             }
-            await UniTask.Yield();
         }
-        private async UniTask HandleRotateEvent(Event rotateEvent)
+        private void HandleRotateEvent(Event rotateEvent)
         {
             if (rotateEvent.startTime <= LineTime && rotateEvent.endTime > LineTime)
             {
@@ -74,9 +73,8 @@ namespace PERM.Player
                 float CurrentRotation = Mathf.Lerp(StartRotation, EndRotation, t);
                 transform.localRotation = Quaternion.Euler(0, 0, CurrentRotation);
             }
-            await UniTask.Yield();
         }
-        private async UniTask HandleDisappearEvent(Event disappearEvent)
+        private void HandleDisappearEvent(Event disappearEvent)
         {
             if (disappearEvent.startTime <= LineTime && disappearEvent.endTime > LineTime)
             {
@@ -89,7 +87,6 @@ namespace PERM.Player
                 color.a = CurrentAlpha;
                 SpriteRenderer.color = color;
             }
-            await UniTask.Yield();
         }
     }
 }
