@@ -11,11 +11,29 @@ namespace PERM.Player
         public Text TimerDisplay;
         public AudioPool AudioPool;
         public AudioController AudioController;
+        public LineCreator LineCreator;
 
         [Header("Settings")]
-        [SerializeField] private string TrackPath;
+        public string TrackPath;
 
+        [Header("TrackObjects")]
         public Chart Chart;
+
+        void Start()
+        {
+            //获取路径
+            string ChartPath = TrackPath + "/Chart.json";
+            string AudioPath = TrackPath + "/Audio.wav";
+            string SpritePath = TrackPath + "/Image.png";
+            //加载音频
+            AudioController.LoadAudio(AudioPath).Forget();
+            //加载谱面
+            string json = File.ReadAllText(ChartPath);
+            Chart = JsonUtility.FromJson<Chart>(json);
+
+            //调用其他组件的 start
+            LineCreator.LineCreatorStart();
+        }
 
         // 单例实例
         private static GameSet instance;
@@ -50,19 +68,6 @@ namespace PERM.Player
             {
                 Destroy(gameObject);
             }
-        }
-
-        void Start()
-        {
-            //获取路径
-            string ChartPath = TrackPath + "/Chart.json";
-            string AudioPath = TrackPath + "/Audio.wav";
-            string SpritePath = TrackPath + "/Image.png";
-            //加载音频
-            AudioController.LoadAudio(AudioPath).Forget();
-            //加载谱面
-            string json = File.ReadAllText(ChartPath);
-            Chart = JsonUtility.FromJson<Chart>(json);
         }
     }
 }

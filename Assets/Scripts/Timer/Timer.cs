@@ -31,7 +31,7 @@ namespace PERM.Player
                 ElapsedTime = (Time.time - StartTime) * Multiplier;
                 TargetTime = ElapsedTime;
                 AudioTimer();
-                TimerDisplay.text = $"TrackTime : {ElapsedTime}\nAudioTime : {ElapsedTime + DelayTime}";
+                TimerDisplay.text = $"TrackTime : {ElapsedTime:F3}\nAudioTime : {ElapsedTime + DelayTime:F3}";
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
