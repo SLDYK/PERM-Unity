@@ -10,6 +10,7 @@ namespace PERM.Player
         [SerializeField] private Timer Timer;
         [SerializeField] private SpriteRenderer SpriteRenderer;
 
+        private bool Test = true;
         private Camera MainCamera;
         private float LineTime;
         private Vector2 ScreenSize;
@@ -32,7 +33,6 @@ namespace PERM.Player
 
             ScreenSize = ScreenTopRight - ScreenBottomLeft;
         }
-
         private void Update()
         {
             LineTime = Timer.GetElapsedTime() / 60 * LineInfo.bpm * 32;
@@ -46,19 +46,11 @@ namespace PERM.Player
             // 处理判定线的消失事件
             HandleDisappearEvents();
         }
-
         private void HandleMoveEvents()
         {
-            // 前向搜索
-            while (moveEventIndex > 0 && LineInfo.judgeLineMoveEvents[moveEventIndex].startTime > LineTime)
+            while (Test)
             {
-                moveEventIndex--;
-            }
-
-            // 后向搜索
-            while (moveEventIndex < LineInfo.judgeLineMoveEvents.Count)
-            {
-                var moveEvent = LineInfo.judgeLineMoveEvents[moveEventIndex];
+                MoveEvent moveEvent = LineInfo.judgeLineMoveEvents[moveEventIndex];
                 if (moveEvent.endTime <= LineTime)
                 {
                     // 当前事件已过期，跳过
@@ -73,21 +65,14 @@ namespace PERM.Player
                 else
                 {
                     // 当前事件尚未开始
-                    break;
+                    moveEventIndex--;
                 }
             }
         }
-
         private void HandleRotateEvents()
         {
-            // 前向搜索
-            while (rotateEventIndex > 0 && LineInfo.judgeLineRotateEvents[rotateEventIndex].startTime > LineTime)
-            {
-                rotateEventIndex--;
-            }
-
             // 后向搜索
-            while (rotateEventIndex < LineInfo.judgeLineRotateEvents.Count)
+            while (Test)
             {
                 var rotateEvent = LineInfo.judgeLineRotateEvents[rotateEventIndex];
                 if (rotateEvent.endTime <= LineTime)
@@ -104,21 +89,14 @@ namespace PERM.Player
                 else
                 {
                     // 当前事件尚未开始
-                    break;
+                    rotateEventIndex--;
                 }
             }
         }
-
         private void HandleDisappearEvents()
         {
-            // 前向搜索
-            while (disappearEventIndex > 0 && LineInfo.judgeLineDisappearEvents[disappearEventIndex].startTime > LineTime)
-            {
-                disappearEventIndex--;
-            }
-
             // 后向搜索
-            while (disappearEventIndex < LineInfo.judgeLineDisappearEvents.Count)
+            while (Test)
             {
                 var disappearEvent = LineInfo.judgeLineDisappearEvents[disappearEventIndex];
                 if (disappearEvent.endTime <= LineTime)
@@ -135,11 +113,10 @@ namespace PERM.Player
                 else
                 {
                     // 当前事件尚未开始
-                    break;
+                    disappearEventIndex--;
                 }
             }
         }
-
         private void HandleMoveEvent(MoveEvent moveEvent)
         {
             Vector2 StartPos = new Vector2(moveEvent.start * ScreenSize.x, moveEvent.start2 * ScreenSize.y) + ScreenBottomLeft;
@@ -150,7 +127,6 @@ namespace PERM.Player
 
             transform.localPosition = CurrentPos;
         }
-
         private void HandleRotateEvent(Event rotateEvent)
         {
             float StartRotation = rotateEvent.start;
@@ -159,7 +135,6 @@ namespace PERM.Player
             float CurrentRotation = Mathf.Lerp(StartRotation, EndRotation, t);
             transform.localRotation = Quaternion.Euler(0, 0, CurrentRotation);
         }
-
         private void HandleDisappearEvent(Event disappearEvent)
         {
             float StartAlpha = disappearEvent.start;
