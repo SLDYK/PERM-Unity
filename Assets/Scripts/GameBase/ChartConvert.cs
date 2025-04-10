@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -5,6 +6,7 @@ namespace PERM.Player
 {
     public static class ChartConvert
     {
+        private static System.Random random = new System.Random();
         internal static Chart CreateChart(PhiChart PhiChart)
         {
             Chart chart = new Chart
@@ -37,6 +39,24 @@ namespace PERM.Player
 
                 // 处理消失事件
                 ProcessGenericEvents(phiJudgeLine.judgeLineDisappearEvents, judgeLine.DisappearEvents);
+
+                // 压力测试(随机生成Note
+                for (int i = 0; i < 50000; i++)
+                {
+                    Note newNote = new Note
+                    {
+                        id = -i,
+                        direction = 1,
+                        type = random.Next(0, 3),
+                        startTime = random.Next(0, 24600),
+                        positionX = (float)random.Next(-4, 4),
+                        speed = 1
+                    };
+                    newNote.endTime = newNote.startTime + random.Next(100, 500);
+                    newNote.startFloor = CalculateFloor(judgeLine.FloorEvents, newNote.startTime);
+                    newNote.endFloor = CalculateFloor(judgeLine.FloorEvents, newNote.endTime);
+                    judgeLine.notes.Add(newNote);
+                }
 
                 // 处理音符
                 ProcessNotes(phiJudgeLine.notesAbove, judgeLine, 1);
@@ -131,14 +151,12 @@ namespace PERM.Player
         {
             Note Left = new Note
             {
-                id = -1,
                 startFloor = float.NegativeInfinity
             };
             judgeLine.notes.Add(Left);
 
             Note Right = new Note
             {
-                id = -2,
                 startFloor = float.PositiveInfinity
             };
             judgeLine.notes.Add(Right);
