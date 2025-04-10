@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 namespace PERM.Player
 {
@@ -16,6 +17,9 @@ namespace PERM.Player
         private List<int> CachedNoteIds = new List<int>();
         public NoteInfo[] NoteInfos = new NoteInfo[0];
 
+        [SerializeField] private int LeftIndex = 1;
+        [SerializeField] private int RightIndex = 1; 
+
         private void Start()
         {
             LoadRange = LineInfo.bpm * FloorRange;
@@ -25,12 +29,15 @@ namespace PERM.Player
         private void Update()
         {
             float currentFloor = EventHandler.LineFloor;
+            float currentTime = EventHandler.LineTime;
             float maxFloor = currentFloor + LoadRange;
 
             // 将不在范围内的 Note 移动到 NoteStage
             foreach (NoteInfo noteInfo in NoteInfos)
             {
-                if (noteInfo.startFloor >= maxFloor || noteInfo.endFloor <= currentFloor)
+                if (noteInfo.startFloor > maxFloor
+                    || noteInfo.endFloor < currentFloor
+                    || noteInfo.endTime < currentTime)
                 {
                     RecycleNote(noteInfo.gameObject);
                     CachedNoteIds.Remove(noteInfo.id);
@@ -38,15 +45,53 @@ namespace PERM.Player
                 }
             }
 
-            // 创建或复用 Note
-            foreach (Note note in LineInfo.notes)
+            //左下标搜索
+            while (currentFloor > LineInfo.notes[LeftIndex].startFloor)
             {
-                if (note.startFloor < maxFloor && note.endFloor > currentFloor && !CachedNoteIds.Contains(note.id))
+                LeftIndex++;
+                if (currentFloor <= LineInfo.notes[LeftIndex].startFloor)
                 {
-                    GameObject noteObject = GetOrCreateNote();
-                    InitializeNote(noteObject, note);
-                    CachedNoteIds.Add(note.id);
-                    NoteInfos = NoteInfos.Append(noteObject.GetComponent<NoteInfo>()).ToArray(); // 更新缓存
+                    break;
+                }
+            }
+            while (currentFloor <= LineInfo.notes[LeftIndex].startFloor)
+            {
+                if (LeftIndex == 0 || currentFloor > LineInfo.notes[LeftIndex - 1].startFloor) 
+                {
+                    break;
+                }
+                LeftIndex--;
+            }
+
+            //右下标搜索
+            while (maxFloor > LineInfo.notes[RightIndex].startFloor)
+            {
+                if (maxFloor <= LineInfo.notes[RightIndex + 1].startFloor)
+                {
+                    break;
+                }
+                RightIndex++;
+            }
+            while (maxFloor <= LineInfo.notes[RightIndex].startFloor)
+            {
+                RightIndex--;
+                if (maxFloor > LineInfo.notes[RightIndex].startFloor)
+                {
+                    break;
+                }
+            }
+
+            for (int i = LeftIndex; i <= RightIndex; i++)
+            {
+                if (i != -1 || i != LineInfo.notes.Count)
+                {
+                    if (LineInfo.notes[i].endTime >= currentTime && !CachedNoteIds.Contains(LineInfo.notes[i].id))
+                    {
+                        GameObject noteObject = GetOrCreateNote();
+                        InitializeNote(noteObject, LineInfo.notes[i]);
+                        CachedNoteIds.Add(LineInfo.notes[i].id);
+                        NoteInfos = NoteInfos.Append(noteObject.GetComponent<NoteInfo>()).ToArray(); // 更新缓存
+                    }
                 }
             }
         }

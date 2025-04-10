@@ -9,12 +9,12 @@ namespace PERM.Player
 
         private bool Test = true;
         private Camera MainCamera;
-        private float LineTime;
         private Vector2 ScreenSize;
         private Vector2 ScreenBottomLeft;
         private Vector2 ScreenTopRight;
 
         public float LineFloor = 0;
+        public float LineTime;
 
         // 为每种事件维护下标
         private int moveEventIndex = 0;

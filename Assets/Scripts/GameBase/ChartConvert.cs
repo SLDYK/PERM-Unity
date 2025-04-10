@@ -42,6 +42,9 @@ namespace PERM.Player
                 ProcessNotes(phiJudgeLine.notesAbove, judgeLine, 1);
                 ProcessNotes(phiJudgeLine.notesBelow, judgeLine, -1);
 
+                //添加两个占位音符
+                Add2Notes(judgeLine);
+
                 // 按照 startFloor 对音符进行排序
                 judgeLine.notes.Sort((note1, note2) => note1.startFloor.CompareTo(note2.startFloor));
 
@@ -122,6 +125,23 @@ namespace PERM.Player
                 };
                 judgeLine.notes.Add(note);
             }
+        }
+
+        private static void Add2Notes(JudgeLine judgeLine)
+        {
+            Note Left = new Note
+            {
+                id = -1,
+                startFloor = float.NegativeInfinity
+            };
+            judgeLine.notes.Add(Left);
+
+            Note Right = new Note
+            {
+                id = -2,
+                startFloor = float.PositiveInfinity
+            };
+            judgeLine.notes.Add(Right);
         }
 
         private static float CalculateFloor(List<Event> floorEvents, float time)
