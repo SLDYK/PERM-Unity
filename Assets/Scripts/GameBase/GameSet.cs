@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,12 +12,14 @@ namespace PERM.Player
         public AudioPool AudioPool;
         public AudioController AudioController;
         public LineCreator LineCreator;
+        public Transform NoteStage;
 
         [Header("Settings")]
         public string TrackPath;
 
         [Header("TrackObjects")]
         public Chart Chart;
+        public PhiChart PhiChart;
 
         void Start()
         {
@@ -29,12 +31,13 @@ namespace PERM.Player
             AudioController.LoadAudio(AudioPath).Forget();
             //加载谱面
             string json = File.ReadAllText(ChartPath);
-            Chart = JsonUtility.FromJson<Chart>(json);
+            PhiChart = JsonUtility.FromJson<PhiChart>(json);
+
+            Chart = ChartConvert.CreateChart(PhiChart);
 
             //调用其他组件的 start
             LineCreator.LineCreatorStart();
         }
-
         // 单例实例
         private static GameSet instance;
 

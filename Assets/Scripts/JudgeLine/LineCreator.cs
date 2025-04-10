@@ -20,12 +20,11 @@ namespace PERM.Player
                 // 获取 LineInfo 组件并赋值
                 LineInfo lineInfo = LineObject.GetComponent<LineInfo>();
                 lineInfo.bpm = line.bpm;
-                lineInfo.notesAbove = line.notesAbove;
-                lineInfo.notesBelow = line.notesBelow;
-                lineInfo.speedEvents = line.speedEvents;
-                lineInfo.judgeLineMoveEvents = line.judgeLineMoveEvents;
-                lineInfo.judgeLineRotateEvents = line.judgeLineRotateEvents;
-                lineInfo.judgeLineDisappearEvents = line.judgeLineDisappearEvents;
+                lineInfo.MoveEvents = line.MoveEvents;
+                lineInfo.RotateEvents = line.RotateEvents;
+                lineInfo.DisappearEvents = line.DisappearEvents;
+                lineInfo.FloorEvents = line.FloorEvents;
+                lineInfo.notes = line.notes;
             }
         }
     }

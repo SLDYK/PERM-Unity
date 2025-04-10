@@ -6,11 +6,10 @@ namespace PERM.Player
     {
         [Header("LineData")]
         public float bpm;
-        public List<Notes> notesAbove;
-        public List<Notes> notesBelow;
-        public List<SpeedEvent> speedEvents;
-        public List<MoveEvent> judgeLineMoveEvents;
-        public List<Event> judgeLineRotateEvents;
-        public List<Event> judgeLineDisappearEvents;
+        public List<Note> notes;
+        public List<MoveEvent> MoveEvents;
+        public List<Event> FloorEvents;
+        public List<Event> RotateEvents;
+        public List<Event> DisappearEvents;
     }
 }

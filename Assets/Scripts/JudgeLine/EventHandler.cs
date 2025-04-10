@@ -1,6 +1,3 @@
-using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 namespace PERM.Player
 {
@@ -17,10 +14,13 @@ namespace PERM.Player
         private Vector2 ScreenBottomLeft;
         private Vector2 ScreenTopRight;
 
+        public float LineFloor = 0;
+
         // 为每种事件维护下标
         private int moveEventIndex = 0;
         private int rotateEventIndex = 0;
         private int disappearEventIndex = 0;
+        private int floorEventIndex = 0;
 
         private void Start()
         {
@@ -37,20 +37,16 @@ namespace PERM.Player
         {
             LineTime = Timer.GetElapsedTime() / 60 * LineInfo.bpm * 32;
 
-            // 处理判定线的移动事件
             HandleMoveEvents();
-
-            // 处理判定线的旋转事件
             HandleRotateEvents();
-
-            // 处理判定线的消失事件
             HandleDisappearEvents();
+            HandleFloorEvents();
         }
         private void HandleMoveEvents()
         {
             while (Test)
             {
-                MoveEvent moveEvent = LineInfo.judgeLineMoveEvents[moveEventIndex];
+                MoveEvent moveEvent = LineInfo.MoveEvents[moveEventIndex];
                 if (moveEvent.endTime <= LineTime)
                 {
                     // 当前事件已过期，跳过
@@ -74,7 +70,7 @@ namespace PERM.Player
             // 后向搜索
             while (Test)
             {
-                var rotateEvent = LineInfo.judgeLineRotateEvents[rotateEventIndex];
+                var rotateEvent = LineInfo.RotateEvents[rotateEventIndex];
                 if (rotateEvent.endTime <= LineTime)
                 {
                     // 当前事件已过期，跳过
@@ -98,7 +94,7 @@ namespace PERM.Player
             // 后向搜索
             while (Test)
             {
-                var disappearEvent = LineInfo.judgeLineDisappearEvents[disappearEventIndex];
+                var disappearEvent = LineInfo.DisappearEvents[disappearEventIndex];
                 if (disappearEvent.endTime <= LineTime)
                 {
                     // 当前事件已过期，跳过
@@ -114,6 +110,30 @@ namespace PERM.Player
                 {
                     // 当前事件尚未开始
                     disappearEventIndex--;
+                }
+            }
+        }
+        private void HandleFloorEvents()
+        {
+            // 后向搜索
+            while (Test)
+            {
+                var floorEvent = LineInfo.FloorEvents[floorEventIndex];
+                if (floorEvent.endTime <= LineTime)
+                {
+                    // 当前事件已过期，跳过
+                    floorEventIndex++;
+                }
+                else if (floorEvent.startTime <= LineTime)
+                {
+                    // 当前事件是目标事件
+                    HandleFloorEvent(floorEvent);
+                    break;
+                }
+                else
+                {
+                    // 当前事件尚未开始
+                    floorEventIndex--;
                 }
             }
         }
@@ -145,6 +165,15 @@ namespace PERM.Player
             Color color = SpriteRenderer.color;
             color.a = CurrentAlpha;
             SpriteRenderer.color = color;
+        }
+        private void HandleFloorEvent(Event floorEvent)
+        {
+            float StartFloor = floorEvent.start;
+            float EndFloor = floorEvent.end;
+            float t = (LineTime - floorEvent.startTime) / (floorEvent.endTime - floorEvent.startTime);
+            float CurrentFloor = Mathf.Lerp(StartFloor, EndFloor, t);
+
+            LineFloor = CurrentFloor;
         }
     }
 }
