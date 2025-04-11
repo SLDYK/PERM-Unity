@@ -141,10 +141,8 @@ namespace PERM.Player
         {
             Vector2 StartPos = new Vector2(moveEvent.start * ScreenSize.x, moveEvent.start2 * ScreenSize.y) + ScreenBottomLeft;
             Vector2 EndPos = new Vector2(moveEvent.end * ScreenSize.x, moveEvent.end2 * ScreenSize.y) + ScreenBottomLeft;
-
             float t = (LineTime - moveEvent.startTime) / (moveEvent.endTime - moveEvent.startTime);
             Vector2 CurrentPos = Vector2.Lerp(StartPos, EndPos, t);
-
             transform.localPosition = CurrentPos;
         }
         private void HandleRotateEvent(Event rotateEvent)
@@ -161,7 +159,6 @@ namespace PERM.Player
             float EndAlpha = disappearEvent.end;
             float t = (LineTime - disappearEvent.startTime) / (disappearEvent.endTime - disappearEvent.startTime);
             float CurrentAlpha = Mathf.Lerp(StartAlpha, EndAlpha, t);
-
             Color color = SpriteRenderer.color;
             color.a = CurrentAlpha;
             SpriteRenderer.color = color;
@@ -172,7 +169,6 @@ namespace PERM.Player
             float EndFloor = floorEvent.end;
             float t = (LineTime - floorEvent.startTime) / (floorEvent.endTime - floorEvent.startTime);
             float CurrentFloor = Mathf.Lerp(StartFloor, EndFloor, t);
-
             LineFloor = CurrentFloor;
         }
     }

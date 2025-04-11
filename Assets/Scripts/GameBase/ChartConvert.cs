@@ -40,24 +40,6 @@ namespace PERM.Player
                 // 处理消失事件
                 ProcessGenericEvents(phiJudgeLine.judgeLineDisappearEvents, judgeLine.DisappearEvents);
 
-                // 压力测试(随机生成Note
-                for (int i = 0; i < 50000; i++)
-                {
-                    Note newNote = new Note
-                    {
-                        id = -i,
-                        direction = 1,
-                        type = random.Next(0, 3),
-                        startTime = random.Next(0, 24600),
-                        positionX = (float)random.Next(-4, 4),
-                        speed = 1
-                    };
-                    newNote.endTime = newNote.startTime + random.Next(100, 500);
-                    newNote.startFloor = CalculateFloor(judgeLine.FloorEvents, newNote.startTime);
-                    newNote.endFloor = CalculateFloor(judgeLine.FloorEvents, newNote.endTime);
-                    judgeLine.notes.Add(newNote);
-                }
-
                 // 处理音符
                 ProcessNotes(phiJudgeLine.notesAbove, judgeLine, 1);
                 ProcessNotes(phiJudgeLine.notesBelow, judgeLine, -1);
@@ -82,15 +64,15 @@ namespace PERM.Player
             float recentFloor = 0;
             foreach (PhiSpeedEvent phiSpeedEvent in speedEvents)
             {
-                Event speedEvent = new Event
+                Event floorEvent = new Event
                 {
                     startTime = phiSpeedEvent.startTime,
                     endTime = phiSpeedEvent.endTime,
                     start = recentFloor
                 };
-                recentFloor += (phiSpeedEvent.endTime - phiSpeedEvent.startTime) * phiSpeedEvent.value;
-                speedEvent.end = recentFloor;
-                judgeLine.FloorEvents.Add(speedEvent);
+                recentFloor += (phiSpeedEvent.endTime - phiSpeedEvent.startTime) / 32 / judgeLine.bpm * 60 * phiSpeedEvent.value;
+                floorEvent.end = recentFloor;
+                judgeLine.FloorEvents.Add(floorEvent);
             }
         }
 

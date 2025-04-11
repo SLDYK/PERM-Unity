@@ -11,9 +11,8 @@ namespace PERM.Player
         [SerializeField] private EventHandler EventHandler;
         [SerializeField] private GameObject NotePrefab;
         [SerializeField] private Transform NoteStage;
-        [SerializeField] private float FloorRange = 1;
+        [SerializeField] private float LoadRange = 0.5f;
 
-        private float LoadRange;
         private List<int> CachedNoteIds = new List<int>();
         public NoteInfo[] NoteInfos = new NoteInfo[0];
 
@@ -22,7 +21,6 @@ namespace PERM.Player
 
         private void Start()
         {
-            LoadRange = LineInfo.bpm * FloorRange;
             NoteStage = GameSet.Instance.NoteStage;
         }
 
@@ -56,7 +54,7 @@ namespace PERM.Player
             }
             while (currentFloor <= LineInfo.notes[LeftIndex].startFloor)
             {
-                if (LeftIndex == 0 || currentFloor > LineInfo.notes[LeftIndex - 1].startFloor) 
+                if (currentFloor > LineInfo.notes[LeftIndex - 1].startFloor) 
                 {
                     break;
                 }
@@ -132,6 +130,7 @@ namespace PERM.Player
             noteInfo.speed = note.speed;
             noteInfo.startFloor = note.startFloor;
             noteInfo.endFloor = note.endFloor;
+            noteInfo.transform.localRotation = Quaternion.Euler(0, 0, 0);
         }
     }
 }
