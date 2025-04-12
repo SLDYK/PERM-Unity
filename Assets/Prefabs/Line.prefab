@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2123903019576212304}
   - component: {fileID: 4208156447474813521}
   - component: {fileID: 1471796748641419148}
+  - component: {fileID: 3694248730969890259}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -125,6 +126,7 @@ MonoBehaviour:
   Timer: {fileID: 0}
   SpriteRenderer: {fileID: 4310106869670478878}
   LineFloor: 0
+  LineTime: 0
 --- !u!114 &4208156447474813521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,7 +134,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6094455375302932346}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3585f5f0b88b8c94ab88e063e4e86edb, type: 3}
   m_Name: 
@@ -141,9 +143,26 @@ MonoBehaviour:
   EventHandler: {fileID: 2123903019576212304}
   NotePrefab: {fileID: 7396649857377237940, guid: 8879981b7419cfc4a90da6679ff9108b, type: 3}
   NoteStage: {fileID: 0}
-  FloorRange: 1
+  LoadRange: 0.5
   NoteInfos: []
+  LeftIndex: 1
+  RightIndex: 1
 --- !u!114 &1471796748641419148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6094455375302932346}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1ecab4036267e5499b0f1e1c758ba9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NoteCreator: {fileID: 4208156447474813521}
+  EventHandler: {fileID: 2123903019576212304}
+  LineInfo: {fileID: 3289375841285216847}
+--- !u!114 &3694248730969890259
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,9 +171,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6094455375302932346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1ecab4036267e5499b0f1e1c758ba9c, type: 3}
+  m_Script: {fileID: 11500000, guid: d292a47c5a8532e48bac44ccc17150d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NoteCreator: {fileID: 4208156447474813521}
-  EventHandler: {fileID: 2123903019576212304}
   LineInfo: {fileID: 3289375841285216847}
+  EventHandler: {fileID: 2123903019576212304}
+  LoadRange: 0.5
+  noteMesh: {fileID: 4300000, guid: 3b27a7201ab89714196091472f055e1f, type: 2}
+  noteMaterial: {fileID: 2100000, guid: d6209edb932fb6a49ae7e4ee52ac1a28, type: 2}

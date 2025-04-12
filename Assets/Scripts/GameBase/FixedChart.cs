@@ -45,6 +45,7 @@ namespace PERM.Player
         public float speed;
         public float startFloor;
         public float endFloor;
+        public bool isCreated = false;
     }
 
     // 官方谱面格式

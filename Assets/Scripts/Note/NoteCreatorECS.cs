@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
+using Unity.Rendering;
 using System.Collections.Generic;
 
 namespace PERM.Player
@@ -11,12 +12,15 @@ namespace PERM.Player
         [SerializeField] private LineInfo LineInfo;
         [SerializeField] private EventHandler EventHandler;
         [SerializeField] private float LoadRange = 0.5f;
+        [SerializeField] private Mesh noteMesh;
+        [SerializeField] private Material noteMaterial;
 
         private EntityManager entityManager;
-        private List<Entity> entityPool = new List<Entity>();
         private int poolIndex = 0;
         private int LeftIndex = 0;
         private int RightIndex = 0;
+
+        public List<Entity> entityPool = new List<Entity>();
 
         private void Start()
         {
@@ -77,9 +81,10 @@ namespace PERM.Player
             for (int i = LeftIndex; i <= RightIndex; i++)
             {
                 var note = LineInfo.notes[i];
-                if (note.endTime >= currentTime)
+                if (note.endTime >= currentTime && !note.isCreated)
                 {
                     CreateNoteEntity(note);
+                    note.isCreated = true; // 设置标志位
                 }
             }
         }
@@ -109,6 +114,13 @@ namespace PERM.Player
                 Position = new float3(note.positionX, note.startFloor, 0),
                 Rotation = quaternion.identity,
                 Scale = 1f
+            });
+
+            // 添加 RenderMeshUnmanaged 组件
+            entityManager.AddComponentData(noteEntity, new RenderMeshUnmanaged
+            {
+                mesh = noteMesh,
+                materialForSubMesh = noteMaterial
             });
         }
 
