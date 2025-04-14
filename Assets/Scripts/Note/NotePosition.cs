@@ -11,7 +11,8 @@ namespace PERM.Player
         {
             foreach (NoteInfo noteInfo in NoteCreator.NoteInfos)
             {
-                noteInfo.transform.localPosition = new Vector3(noteInfo.positionX, (noteInfo.startFloor - EventHandler.LineFloor) * noteInfo.direction * 6, 0);
+                float PosY = (noteInfo.startFloor - EventHandler.LineFloor) * noteInfo.direction * 6;
+                noteInfo.transform.localPosition = new Vector3(noteInfo.positionX, PosY, 0);
             }
         }
     }

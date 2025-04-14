@@ -11,8 +11,8 @@ namespace PERM.Player
         [SerializeField] private EventHandler EventHandler;
         [SerializeField] private GameObject NotePrefab;
         [SerializeField] private Transform NoteStage;
-        [SerializeField] private float LoadRange = 0.5f;
 
+        private float LoadRange = 3f;
         private List<int> CachedNoteIds = new List<int>();
         public NoteInfo[] NoteInfos = new NoteInfo[0];
 
